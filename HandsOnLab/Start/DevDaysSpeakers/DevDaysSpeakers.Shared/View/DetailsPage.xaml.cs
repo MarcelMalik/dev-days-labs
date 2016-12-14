@@ -23,7 +23,22 @@ namespace DevDaysSpeakers.View
             //Set local instance of speaker and set BindingContext
             this.speaker = speaker;
             BindingContext = this.speaker;
+
+            ButtonSpeak.Clicked += ButtonSpeakOnClicked;
+            ButtonWebsite.Clicked += ButtonWebsiteOnClicked;
         }
-        
+
+        private void ButtonSpeakOnClicked(object sender, EventArgs e)
+        {
+            CrossTextToSpeech.Current.Speak(this.speaker.Description);
+        }
+
+        private void ButtonWebsiteOnClicked(object sender, EventArgs e)
+        {
+            if (speaker.Website.StartsWith("http"))
+            {
+                Device.OpenUri(new Uri(speaker.Website));
+            }
+        }
     }
 }

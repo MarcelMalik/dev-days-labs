@@ -24,7 +24,7 @@ namespace DevDaysSpeakers.Services
             if (Client?.SyncContext?.IsInitialized ?? false)
                 return;
 
-            var appUrl = "https://OUR-APP-NAME-HERE.azurewebsites.net";
+            var appUrl = "https://devdayslabsmm.azurewebsites.net";
 
             //Create our client
             Client = new MobileServiceClient(appUrl);
@@ -50,7 +50,11 @@ namespace DevDaysSpeakers.Services
 
         public async Task<IEnumerable<Speaker>> GetSpeakers()
         {
-            return new List<Speaker>();
+            await Initialize();
+            await SyncSpeakers();
+            return await table
+                .OrderBy(s => s.Name)
+                .ToEnumerableAsync();
         }
 
       
@@ -58,6 +62,8 @@ namespace DevDaysSpeakers.Services
         {
             try
             {
+                await Client.SyncContext.PushAsync();
+                await table.PullAsync("allSpeakers", table.CreateQuery());
             }
             catch (Exception ex)
             {

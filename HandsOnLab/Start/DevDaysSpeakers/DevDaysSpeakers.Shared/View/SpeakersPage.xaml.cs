@@ -22,8 +22,21 @@ namespace DevDaysSpeakers.View
             //Create the view model and set as binding context
             vm = new SpeakersViewModel();
             BindingContext = vm;
+
+            ListViewSpeakers.ItemSelected += ListViewSpeakersOnItemSelected;
         }
 
-       
+        private async void ListViewSpeakersOnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            var speaker = e.SelectedItem as Speaker;
+            if (speaker == null)
+            {
+                return;
+            }
+
+            await Navigation.PushAsync(new DetailsPage(speaker));
+
+            ListViewSpeakers.SelectedItem = null;
+        }
     }
 }
